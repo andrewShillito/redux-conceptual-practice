@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Udacity Todos Goals</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>State</h1>
+      <ul id='review'></ul>
+    </div>
+    <script type='text/javascript'>
+      //DOM Code
+      function addToScreen(textToAdd) {
+        const node = document.createElement('li')
+        const text = document.createTextNode(textToAdd)
+        node.appendChild(text)
+        document.getElementById('review')
+          .appendChild(node)
+      }
+
+      //Users and Movies
+      const user1 = {
+        id: 1,
+        name: 'John Smith',
+        age: 40,
+      }
+
+      const user2 = {
+        id: 0,
+        name: 'Jane Jones',
+        age: 28,
+      }
+
+      const movie1 = {
+        id: 0,
+        name: 'Planet Earth',
+      }
+
+      const movie2 = {
+        id: 1,
+        name: 'Planet Earth 2',
+      }
+
+      // Library Code
+
+      function createStore(reducer) {
+       // The store should have four parts
+       // 1. The state
+       // 2. Get the state.
+       // 3. Listen to changes on the state.
+       // 4. Update the state
+
+       let state
+       let listeners = []
+
+       const getState = () => state
+
+       const subscribe = (listener) => {
+         listeners.push(listener)
+         return () => {
+           listeners = listeners.filter((l) => l !== listener)
+         }
+       }
+
+       const dispatch = (action) => {
+         state = reducer(state, action)
+         listeners.forEach((listener) => listener())
+       }
+
+       return {
+         getState,
+         subscribe,
+         dispatch,
+       }
+      }
+
+      // App Code
+
+      const ADD_MOVIE = "ADD_MOVIE";
+      const ADD_USER = "ADD_USER";
+      const REMOVE_MOVIE = "REMOVE_MOVIE";
+      const REMOVE_USER = "REMOVE_USER";
+
+      const addMovieAction = (movie) => {
+        return {
+          type: ADD_MOVIE,
+          movie,
+        };
+      }
+
+      const deleteMovieAction = (id) => {
+        return {
+          type: REMOVE_MOVIE,
+          id,
+        };
+      }
+
+      const addUserAction = (user) => {
+        return {
+          type: ADD_USER,
+          user,
+        };
+      }
+
+      const deleteUserAction = (id) => {
+        return {
+          type: REMOVE_USER,
+          id,
+        };
+      }
+
+      function movies(state = {}, action) {
+        switch(action.type) {
+          case ADD_MOVIE :
+            return {
+              ...state,
+              [action.movie.id]: action.movie,
+            };
+          case REMOVE_MOVIE :
+            const newState = {
+              ...state,
+            };
+            delete newState[action.id];
+            return newState;
+          default :
+            return state;
+        }
+      }
+
+      function users(state = {}, action) {
+        switch(action.type) {
+          case ADD_USER :
+            return {
+              ...state,
+              [action.user.id]: action.user
+            };
+          case REMOVE_USER :
+            const newState = {
+              ...state,
+            };
+            delete newState[action.id];
+            return newState;
+          default :
+            return state;
+        }
+      }
+
+      function app(state = {}, action) {
+        return {
+          movies: movies(state.movies, action),
+          users: users(state.users, action),
+        };
+      }
+
+      const store = createStore(app);
+      store.subscribe(() => {
+        addToScreen('The new state is: ' + JSON.stringify(store.getState()));
+      });
+
+      store.dispatch(addUserAction(user1));
+      store.dispatch(deleteUserAction(1));
+      store.dispatch(addUserAction(user2));
+      store.dispatch(addMovieAction(movie1));
+      store.dispatch(addMovieAction(movie2));
+      store.dispatch(deleteMovieAction(0));
+
+    </script>
+  </body>
+</html>
