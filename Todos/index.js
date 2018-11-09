@@ -2,38 +2,6 @@ function generateId () {
     return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
 }
 
-// Library Code
-
-function createStore(reducer) {
-    // The Store should have 4 parts:
-    // 1. The State
-    // 2. Get the state
-    // 3. Listen to changes on the state
-    // 4. Update the State
-    let state;
-    let listeners = [];
-
-    const subscribe = (listener) => {
-        listeners.push(listener);
-        return () => {
-            listeners = listeners.filter((l) => l !== listener);
-        };
-    };
-
-    const dispatch = (action) => {
-        state = reducer(state, action);
-        listeners.forEach(listener => listener());
-    };
-
-    const getState = () => state;
-
-    return {
-        getState,
-        subscribe,
-        dispatch,
-    };
-}
-
 // APP CODE
 
 const ADD_TODO = "ADD_TODO";
@@ -104,14 +72,10 @@ function goals(state = [], action) {
     }
 }
 
-function app(state = {}, action) {
-    return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action),
-    };
-}
-
-const store = createStore(app);
+const store = Redux.createStore(Redux.combineReducers({
+  todos,
+  goals,
+}));
 
 store.subscribe(() => {
   const { goals, todos } = store.getState();
