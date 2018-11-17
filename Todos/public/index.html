@@ -276,7 +276,7 @@
       }
     }
     
-    const connectedTodos = ReactRedux.connect((state) => ({
+    const ConnectedTodos = ReactRedux.connect((state) => ({
       todos: state.todos,
     }))(Todos)
 
@@ -311,7 +311,7 @@
       }
     }
     
-    const connectedGoals = ReactRedux.connect((state) => ({
+    const ConnectedGoals = ReactRedux.connect((state) => ({
       goals: state.goals,
     }))(Goals)
 
@@ -334,7 +334,7 @@
       }
     }
     
-    const connectedApp = ReactRedux.connect((state) => ({
+    const ConnectedApp = ReactRedux.connect((state) => ({
       loading: state.loading
     }))(App);
 
